@@ -28,7 +28,7 @@ export default function SerectPokemon({
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     if (data.name) {
-      const pokemon = await getPokemon(data.name);
+      const pokemon = await getPokemon('name', data.name);
       console.log(pokemon);
       setSelectedPokemon(pokemon);
     }
