@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import type { PokemonType } from '../_types/SelectedPokemon';
+import type { PokemonType } from '../../types/SelectedPokemon';
 
 type CheckPokemonModalProps = {
   selectedPokemon: PokemonType;

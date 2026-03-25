@@ -1,8 +1,9 @@
 import { ApolloClient, HttpLink, InMemoryCache, gql } from '@apollo/client';
-import { PokemonType } from '../_types/SelectedPokemon';
+import { PokemonType } from '../types/SelectedPokemon';
 
 const POKEAPI_GRAPHQL_ENDPOINT = 'https://beta.pokeapi.co/graphql/v1beta';
 
+// 対戦用のGQL
 const GET_POKEMON = gql`
   query GetPokemon($where: pokemon_v2_pokemon_bool_exp!) {
     pokemon_v2_pokemon(where: $where, limit: 1) {
@@ -28,7 +29,7 @@ const GET_POKEMON = gql`
   }
 `;
 
-export const getPokemon = async (
+export const getPokemonDetail = async (
   type: 'id' | 'name',
   value: string | number,
 ): Promise<PokemonType> => {

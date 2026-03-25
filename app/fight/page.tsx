@@ -1,10 +1,8 @@
-import React from 'react'
-import { Fight } from './components/Fight'
+import React from 'react';
+import { Fight } from './components/Fight';
 
 const page = () => {
-  return (
-    <Fight />
-  )
-}
+  return <Fight />;
+};
 
 export default page;

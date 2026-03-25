@@ -23,3 +23,19 @@ export type PokemonType = {
     defense: number;
   };
 };
+
+export type _PokemonList = {
+  id: number;
+  name: string;
+  height: number;
+  weight: number;
+  types: string[];
+  sprites: {
+    front_default: string | null;
+  };
+};
+
+export type PokemonList = {
+  pokemon: _PokemonList[];
+  totalCount: number;
+};

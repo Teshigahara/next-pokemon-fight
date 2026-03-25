@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { PokemonType } from '../_types/SelectedPokemon';
+import { PokemonType } from '../../types/SelectedPokemon';
 import { AttackMotionHandle } from '../components/AttackMotion';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

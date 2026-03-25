@@ -2,15 +2,14 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
-import { getPokemon } from '../_lib/get-pokemon';
+import { getPokemonDetail } from '../../lib/get-pokemon-detail';
 import { CheckPokemonModal } from './CheckPokemonModal';
 import SelectPokemon from './SelectPokemon';
 import { StatsModal } from './StatsModal';
-import type { PokemonType } from '../_types/SelectedPokemon';
+import type { PokemonType } from '../../types/SelectedPokemon';
 import { ActionCommandModal } from './ActionCommandModal';
 import { getRandomPokemonId } from '../_lib/get-randam-pokemon-id';
 import AttackMotion, { AttackMotionHandle } from './AttackMotion';
-import { set } from 'zod';
 import { useBattle } from '../_hooks/useBattle';
 
 export const Fight = () => {
@@ -42,7 +41,7 @@ export const Fight = () => {
     console.log(selectedPokemon);
     if (!checkPokemonFlag || !selectedPokemon || enemyPokemon) return;
     (async () => {
-      const pokemon = await getPokemon('id', getRandomPokemonId());
+      const pokemon = await getPokemonDetail('id', getRandomPokemonId());
       setEnemyPokemon(pokemon);
     })();
   }, [checkPokemonFlag, enemyPokemon, selectedPokemon]);

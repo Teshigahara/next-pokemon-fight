@@ -4,8 +4,8 @@ import React from 'react';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { getPokemon } from '../_lib/get-pokemon';
-import type { PokemonType } from '../_types/SelectedPokemon';
+import { getPokemonDetail } from '../../lib/get-pokemon-detail';
+import type { PokemonType } from '../../types/SelectedPokemon';
 
 const schema = z.object({
   name: z.string().min(1, 'ポケモンの名前は必須です'),
@@ -28,7 +28,7 @@ export default function SerectPokemon({
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     if (data.name) {
-      const pokemon = await getPokemon('name', data.name);
+      const pokemon = await getPokemonDetail('name', data.name);
       console.log(pokemon);
       setSelectedPokemon(pokemon);
     }
