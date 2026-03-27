@@ -1,12 +1,21 @@
 import { ApolloClient, HttpLink, InMemoryCache, gql } from '@apollo/client';
-import { PokemonList } from '../types/SelectedPokemon';
+import { PokemonList, SearchFilter } from '../types/SelectedPokemon';
 
 const POKEAPI_GRAPHQL_ENDPOINT = 'https://beta.pokeapi.co/graphql/v1beta';
 
 // 図鑑用のGQL
 const GET_POKEMON = gql`
-  query GetPokemonList($offset: Int!) {
-    pokemon_v2_pokemon(limit: 30, offset: $offset, order_by: { id: asc }) {
+  query GetPokemonList(
+    $offset: Int!
+    $where: pokemon_v2_pokemon_bool_exp
+    $orderBy: [pokemon_v2_pokemon_order_by!]!
+  ) {
+    pokemon_v2_pokemon(
+      limit: 30
+      offset: $offset
+      order_by: $orderBy
+      where: $where
+    ) {
       id
       name
       height
@@ -21,7 +30,7 @@ const GET_POKEMON = gql`
         sprites
       }
     }
-    pokemon_v2_pokemon_aggregate {
+    pokemon_v2_pokemon_aggregate(where: $where) {
       aggregate {
         count
       }
@@ -31,6 +40,7 @@ const GET_POKEMON = gql`
 
 export const getPokemonList = async (
   offset: number = 0,
+  filter: SearchFilter = {},
 ): Promise<PokemonList> => {
   const client = new ApolloClient({
     ssrMode: true,
@@ -41,9 +51,33 @@ export const getPokemonList = async (
     cache: new InMemoryCache(),
   });
 
+  const where: any = { _and: [] };
+
+  if (filter.name) {
+    where._and.push({ name: { _ilike: `%${filter.name}%` } });
+  }
+
+  if (filter.type) {
+    where._and.push({
+      pokemon_v2_pokemontypes: {
+        pokemon_v2_type: { name: { _eq: filter.type } },
+      },
+    });
+  }
+
+  const finalWhere = where._and.length > 0 ? where : {};
+  const orderBy =
+    filter.sort === 'id'
+      ? [{ id: 'asc' }]
+      : filter.sort === 'height'
+        ? [{ height: 'desc' }]
+        : filter.sort === 'weight'
+          ? [{ weight: 'desc' }]
+          : [{ id: 'asc' }]; // デフォルトはID順
+
   const { data } = await client.query({
     query: GET_POKEMON,
-    variables: { offset },
+    variables: { offset, where: finalWhere, orderBy },
   });
 
   const pokemonArray = data?.pokemon_v2_pokemon || [];

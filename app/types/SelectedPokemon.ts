@@ -39,3 +39,9 @@ export type PokemonList = {
   pokemon: _PokemonList[];
   totalCount: number;
 };
+
+export type SearchFilter = {
+  name?: string;
+  type?: string;
+  sort?: 'id' | 'height' | 'weight';
+};

@@ -3,7 +3,12 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { getPokemonList } from '@/app/lib/get-pokemon-list';
-import type { PokemonList, _PokemonList } from '../../types/SelectedPokemon';
+import type {
+  PokemonList,
+  _PokemonList,
+  SearchFilter,
+} from '../../types/SelectedPokemon';
+import { SearchFormModal } from './SearchFormModal';
 
 /**
  * 初期表示　全検索
@@ -15,6 +20,7 @@ import type { PokemonList, _PokemonList } from '../../types/SelectedPokemon';
 export const Encyclopedia = () => {
   const [pokemonList, setPokemonList] = useState<PokemonList | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchFilter, setSearchFilter] = useState<SearchFilter>({});
   const limit = 30; // 1ページあたりの表示件数
 
   useEffect(() => {
@@ -33,16 +39,29 @@ export const Encyclopedia = () => {
   const handlePageChange = async (type: 'next' | 'prev') => {
     const newPage = type === 'next' ? currentPage + 1 : currentPage - 1;
     const offset = (newPage - 1) * limit;
-    const pokemon = await getPokemonList(offset);
+    const pokemon = await getPokemonList(offset, searchFilter);
     setPokemonList(pokemon);
     setCurrentPage(newPage);
+  };
+
+  const handleSearch = async (filter: { name?: string; type?: string }) => {
+    console.log(filter);
+    const pokemon = await getPokemonList(0, filter);
+    console.log(pokemon);
+    setSearchFilter(filter);
+    setPokemonList(pokemon);
+    setCurrentPage(1);
   };
 
   return (
     <div style={{ padding: '20px' }}>
       <h1>ポケモン図鑑</h1>
+      {/* 検索モーダル */}
+      <div className="flex items-center justify-center border border-gray-300 rounded-md p-4 mb-6">
+        <SearchFormModal handleSearch={handleSearch} />
+      </div>
 
-      {/* 1. グリッドレイアウトで並べる */}
+      {/* 検索結果リスト */}
       <div
         style={{
           display: 'grid',
@@ -90,6 +109,10 @@ export const Encyclopedia = () => {
                 </span>
               ))}
             </div>
+            {/* 身長 */}
+            <p>height: {pokemon.height}</p>
+            {/* 重さ */}
+            <p>weight: {pokemon.weight}</p>
           </div>
         ))}
       </div>
